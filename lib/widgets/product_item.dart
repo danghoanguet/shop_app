@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
   final String imageUrl;
@@ -13,9 +14,15 @@ class ProductItem extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: GridTile(
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
+        child: GestureDetector(
+          onTap: () => {
+            Navigator.of(context)
+                .pushNamed(ProducDetailsScreen.routeName, arguments: id)
+          },
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+          ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
@@ -32,7 +39,6 @@ class ProductItem extends StatelessWidget {
           title: FittedBox(
             child: Text(
               title,
-              
               textAlign: TextAlign.center,
             ),
           ),
