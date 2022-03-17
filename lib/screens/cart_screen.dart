@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart_provider.dart' show CartProvider;
+import 'package:shop_app/screens/place_order.dart';
 
 import '../widgets/cart_Item.dart';
 
@@ -32,11 +33,10 @@ class CartScreen extends StatelessWidget {
                 SizedBox(
                   width: 10,
                 ),
-                Spacer(),
                 Consumer<CartProvider>(
                   builder: (_, value, __) => Chip(
                     label: Text(
-                      '\$${value.totalAmount}',
+                      '\$${value.totalAmount.toStringAsFixed(2)}',
                       style: Theme.of(context)
                           .textTheme
                           .titleLarge!
@@ -45,8 +45,9 @@ class CartScreen extends StatelessWidget {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
                 ),
+                Spacer(),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => _showOrder(context),
                   child: Text('ORDER NOW',
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
@@ -74,5 +75,13 @@ class CartScreen extends StatelessWidget {
         ),
       ]),
     );
+  }
+
+  _showOrder(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return PlaceOrder();
+        });
   }
 }
