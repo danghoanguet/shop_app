@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart_provider.dart';
 import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/providers/product_provider.dart';
 import 'package:shop_app/screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
@@ -41,11 +42,11 @@ class ProductItem extends StatelessWidget {
             ),
           ),
           trailing: IconButton(
-            color: Theme.of(context).colorScheme.secondary,
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () =>
-                cart.addItem(product.id, product.price, product.title),
-          ),
+              color: Theme.of(context).colorScheme.secondary,
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                addItem(context, cart, product);
+              }),
           title: FittedBox(
             child: Text(
               product.title,
@@ -53,6 +54,23 @@ class ProductItem extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void addItem(BuildContext context, CartProvider cart, Product product) {
+    cart.addItem(product.id, product.price, product.title);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Added item to cart!',
+          //textAlign: TextAlign.end,
+        ),
+        duration: Duration(seconds: 2),
+        action: SnackBarAction(
+            label: 'UNDO',
+            onPressed: () => cart.removeSingleItem((product.id))),
       ),
     );
   }
