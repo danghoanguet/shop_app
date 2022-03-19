@@ -13,20 +13,31 @@ class ProductGrid extends StatelessWidget {
         Provider.of<ProductProvider>(context, listen: true);
     final product =
         showFavorites ? productsProvider.favoriteItems : productsProvider.items;
+
+    Future<void> _refreshProduct(BuildContext context) async {
+      await Provider.of<ProductProvider>(context, listen: false)
+          .fetchAndSetProducts();
+    }
+
     //final testProducts = context.read<ProductProvider>().items;
-    return GridView.builder(
-        padding: const EdgeInsets.all(20),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 2 / 3, // height 3 width 2
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemCount: product.length,
-        itemBuilder: (context, index) => ChangeNotifierProvider.value(
-              value: product[index],
-              // create: (context) => product[index],
-              child: ProductItem(),
-            ));
+    return RefreshIndicator(
+      onRefresh: (() {
+        return _refreshProduct(context);
+      }),
+      child: GridView.builder(
+          padding: const EdgeInsets.all(20),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 2 / 3, // height 3 width 2
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemCount: product.length,
+          itemBuilder: (context, index) => ChangeNotifierProvider.value(
+                value: product[index],
+                // create: (context) => product[index],
+                child: ProductItem(),
+              )),
+    );
   }
 }
