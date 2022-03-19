@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/cart_provider.dart';
 import 'package:shop_app/providers/product.dart';
-import 'package:shop_app/providers/product_provider.dart';
 import 'package:shop_app/screens/product_details_screen.dart';
 
 class ProductItem extends StatelessWidget {
@@ -10,7 +9,8 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<CartProvider>(context, listen: false);
-    print("build run");
+    final scaffold = ScaffoldMessenger.of(context);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
       child: GridTile(
@@ -27,9 +27,10 @@ class ProductItem extends StatelessWidget {
         footer: GridTileBar(
           backgroundColor: Colors.black87,
           leading: Consumer<Product>(
-            //child will not change when Product change
-            builder: (context, value, Widget? _) => IconButton(
-              icon: product.isFavorite
+              //child will not change when Product change
+              builder: (context, prod, _) {
+            return IconButton(
+              icon: prod.isFavorite
                   ? Icon(
                       Icons.favorite,
                       color: Theme.of(context).colorScheme.secondary,
@@ -38,9 +39,27 @@ class ProductItem extends StatelessWidget {
                       Icons.favorite_border_outlined,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
-              onPressed: product.toggleFavorite,
-            ),
-          ),
+              onPressed: () async {
+                try {
+                  await prod.toggleFavorite();
+                  scaffold.hideCurrentSnackBar();
+                  scaffold.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        !prod.isFavorite
+                            ? 'Remove from favorite list'
+                            : 'Add to favorite list',
+                        textAlign: TextAlign.center,
+                      ),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+            );
+          }),
           trailing: IconButton(
               color: Theme.of(context).colorScheme.secondary,
               icon: Icon(Icons.shopping_cart),

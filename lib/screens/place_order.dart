@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/order_provider.dart';
@@ -13,8 +11,8 @@ class PlaceOrder extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context, listen: true);
     final cartProviderValue = cartProvider.items.values.toList();
-
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+
     return Card(
       elevation: 5,
       child: Container(
@@ -74,11 +72,17 @@ class PlaceOrder extends StatelessWidget {
                                 ),
                               ),
                               TextButton(
-                                onPressed: () {
-                                  orderProvider.addOrder(cartProviderValue,
-                                      cartProvider.totalAmount);
-                                  cartProvider.clearCartById(
-                                      cartProvider.items.keys.toList()[index]);
+                                onPressed: () async {
+                                  try {
+                                    await orderProvider.addOrder(
+                                        cartProviderValue,
+                                        cartProvider.totalAmount);
+                                    cartProvider.clearCartById(cartProvider
+                                        .items.keys
+                                        .toList()[index]);
+                                  } catch (e) {
+                                    print(e.toString());
+                                  }
                                 },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -98,11 +102,18 @@ class PlaceOrder extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      orderProvider.addOrder(
+                    onPressed: () async {
+                      await orderProvider.addOrder(
                           cartProviderValue, cartProvider.totalAmount);
                       cartProvider.clearAllCart();
                     },
+                    // onPressed: () async {
+                    //   await orderProvider.addOrder2([
+                    //     {'test': 'test', 'test2': 'test2'},
+                    //     {'test': 'test', 'test2': 'test2'},
+                    //     {'test': 'test', 'test2': 'test2'},
+                    //   ], 10);
+                    // },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
                           Theme.of(context).colorScheme.primary),
