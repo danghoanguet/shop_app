@@ -4,11 +4,14 @@ import 'package:shop_app/providers/cart_provider.dart';
 import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/screens/product_details_screen.dart';
 
+import '../providers/auth.dart';
+
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<CartProvider>(context, listen: false);
+    final auth = Provider.of<Auth>(context, listen: false);
     final scaffold = ScaffoldMessenger.of(context);
 
     return ClipRRect(
@@ -41,7 +44,7 @@ class ProductItem extends StatelessWidget {
                     ),
               onPressed: () async {
                 try {
-                  await prod.toggleFavorite();
+                  await prod.toggleFavorite(auth.token, auth.userId);
                   scaffold.hideCurrentSnackBar();
                   scaffold.showSnackBar(
                     SnackBar(

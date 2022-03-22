@@ -74,9 +74,10 @@ class PlaceOrder extends StatelessWidget {
                               TextButton(
                                 onPressed: () async {
                                   try {
+                                    final List<Cart> cartList = [];
+                                    cartList.add(cartProviderValue[index]);
                                     await orderProvider.addOrder(
-                                        cartProviderValue,
-                                        cartProvider.totalAmount);
+                                        cartList, cartProvider.totalAmount);
                                     cartProvider.clearCartById(cartProvider
                                         .items.keys
                                         .toList()[index]);
@@ -103,9 +104,13 @@ class PlaceOrder extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () async {
-                      await orderProvider.addOrder(
-                          cartProviderValue, cartProvider.totalAmount);
-                      cartProvider.clearAllCart();
+                      try {
+                        await orderProvider.addOrder(
+                            cartProviderValue, cartProvider.totalAmount);
+                        cartProvider.clearAllCart();
+                      } catch (e) {
+                        print(e.toString());
+                      }
                     },
                     // onPressed: () async {
                     //   await orderProvider.addOrder2([
