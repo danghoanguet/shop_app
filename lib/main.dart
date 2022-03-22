@@ -53,10 +53,16 @@ class MyApp extends StatelessWidget {
                   : FutureBuilder(
                       future: auth.tryAutoLogin(),
                       builder: (ctx, authResultSnapshot) =>
+                          // we dont need to check authResultSnapshot.data here since
+                          // our future auth.tryAutoLogin() will trigger ther
+                          //build method again in the end and then we enter anyway
+                          // because auth.isAuth is true cause we have store token
+                          //in device local storage
                           authResultSnapshot.connectionState ==
                                   ConnectionState.waiting
                               ? SplashScreen()
                               : AuthScreen(),
+                      // : authResultSnapshot.data == false ? AuthScreen() : ProductsOverViewScreen(), redundant
                     ),
               routes: {
                 ProducDetailsScreen.routeName: (context) =>
