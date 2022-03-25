@@ -20,11 +20,21 @@ class ProducDetailsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(children: [
           Container(
+            padding: EdgeInsets.symmetric(
+              vertical: 15,
+              horizontal: 15,
+            ),
             height: MediaQuery.of(context).size.height * 0.4,
             width: double.infinity,
-            child: Image.network(
-              product.imageUrl,
-              fit: BoxFit.contain,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Hero(
+                tag: product.id,
+                child: Image.network(
+                  product.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
           SizedBox(
