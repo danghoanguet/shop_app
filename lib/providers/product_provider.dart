@@ -157,7 +157,7 @@ class ProductProvider with ChangeNotifier {
       if (respone.statusCode >= 400) {
         _items.insert(exitingProductIndex, exitingProduct);
         notifyListeners();
-        throw HttpExepciotn('Could not delete product!');
+        throw HttpException('Could not delete product!');
       }
     } catch (error) {
       throw error;

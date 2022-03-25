@@ -57,7 +57,7 @@ class Auth with ChangeNotifier {
           }));
 
       if (json.decode(respone.body)['error'] != null) {
-        throw HttpExepciotn(json.decode(respone.body)['error']['message']);
+        throw HttpException(json.decode(respone.body)['error']['message']);
       }
       _token = json.decode(respone.body)['idToken'];
       _userId = json.decode(respone.body)['localId'];
