@@ -57,7 +57,7 @@ class Auth with ChangeNotifier {
           }));
 
       if (json.decode(respone.body)['error'] != null) {
-        throw HttpExepciotn(json.decode(respone.body)['error']['message']);
+        throw HttpException(json.decode(respone.body)['error']['message']);
       }
       _token = json.decode(respone.body)['idToken'];
       _userId = json.decode(respone.body)['localId'];
@@ -83,14 +83,12 @@ class Auth with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) return false;
     final extractedUserData = json.decode(prefs.getString('userData')!);
-    final expiryDate =
-        DateTime.parse(extractedUserData['expiryDate'] as String);
+    final expiryDate = DateTime.parse(extractedUserData['expiryDate']);
     if (expiryDate.isBefore(DateTime.now())) {
       return false;
     }
-    _token = extractedUserData['token'] as String;
-    _userId = extractedUserData['userId'] as String;
-
+    _token = extractedUserData['token'];
+    _userId = extractedUserData['userId'];
     _expiryDate = expiryDate;
     notifyListeners();
     _autoLogout();

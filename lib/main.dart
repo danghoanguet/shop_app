@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/helpers/custom_route.dart';
 import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart_provider.dart';
 import 'package:shop_app/providers/order_provider.dart';
@@ -47,16 +48,26 @@ class MyApp extends StatelessWidget {
                 colorScheme:
                     ColorScheme.fromSwatch(primarySwatch: Colors.purple)
                         .copyWith(secondary: Colors.deepOrange),
+                pageTransitionsTheme: PageTransitionsTheme(builders: {
+                  TargetPlatform.android: CustomPageTransitionBuilder(),
+                  TargetPlatform.iOS: CustomPageTransitionBuilder(),
+                }),
               ),
               home: auth.isAuth
                   ? ProductsOverViewScreen()
                   : FutureBuilder(
                       future: auth.tryAutoLogin(),
                       builder: (ctx, authResultSnapshot) =>
+                          // we dont need to check authResultSnapshot.data here since
+                          // our future auth.tryAutoLogin() will trigger ther
+                          //build method again in the end and then we enter anyway
+                          // because auth.isAuth is true cause we have store token
+                          //in device local storage
                           authResultSnapshot.connectionState ==
                                   ConnectionState.waiting
                               ? SplashScreen()
                               : AuthScreen(),
+                      // : authResultSnapshot.data == false ? AuthScreen() : ProductsOverViewScreen(), redundant
                     ),
               routes: {
                 ProducDetailsScreen.routeName: (context) =>
