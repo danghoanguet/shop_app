@@ -62,15 +62,18 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
     final filterString =
-        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+        filterByUser ? 'orderBy="createrId"&equalTo="$userId"' : '';
     var url = Uri.parse(
         'https://shop-app-300ff-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterString');
     try {
       final respone = await http.get(url);
 
       final data = json.decode(respone.body) as Map<String, dynamic>;
-
-      if (data.isEmpty) {
+      print(data);
+      if (data == {}) {
+        print('data is empty');
+        _items = [];
+        notifyListeners();
         return;
       }
 

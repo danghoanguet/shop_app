@@ -31,37 +31,39 @@ class UserProductScreen extends StatelessWidget {
           ],
         ),
         drawer: AppDraw(),
-        body: RefreshIndicator(
-          onRefresh: () {
-            return _refreshProduct(context);
-          },
-          child: FutureBuilder(
-            future: _refreshProduct(context),
-            builder: ((context, snapshot) {
-              print('future build run');
-              return snapshot.connectionState == ConnectionState.waiting
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Consumer<ProductProvider>(builder: (__, value, _) {
+        body: FutureBuilder(
+          future: _refreshProduct(context),
+          builder: ((context, snapshot) {
+            print('future build run');
+            return snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () => _refreshProduct(context),
+                    child: Consumer<ProductProvider>(builder: (__, value, _) {
                       print('consumer run');
-                      return Padding(
-                        padding: EdgeInsets.all(8),
-                        child: ListView.builder(
-                          itemCount: value.items.length,
-                          itemBuilder: (context, i) => Column(children: [
-                            UserProductItem(
-                              imageUrl: value.items[i].imageUrl,
-                              title: value.items[i].title,
-                              id: value.items[i].id,
-                            ),
-                            Divider(),
-                          ]),
-                        ),
-                      );
-                    });
-            }),
-          ),
+                      return value.items.isEmpty
+                          ? Center(
+                              child: Text('You have not add any product yet!'),
+                            )
+                          : Padding(
+                              padding: EdgeInsets.all(8),
+                              child: ListView.builder(
+                                itemCount: value.items.length,
+                                itemBuilder: (context, i) => Column(children: [
+                                  UserProductItem(
+                                    imageUrl: value.items[i].imageUrl,
+                                    title: value.items[i].title,
+                                    id: value.items[i].id,
+                                  ),
+                                  Divider(),
+                                ]),
+                              ),
+                            );
+                    }),
+                  );
+          }),
         ));
   }
 }
